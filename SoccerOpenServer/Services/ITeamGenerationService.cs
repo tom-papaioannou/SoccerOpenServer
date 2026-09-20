@@ -1064,8 +1064,9 @@ namespace SoccerOpenServer.Services
                     {
                         PersonID = personID,
                         HealthStatus = HealthStatus.Healthy,
-                        PhysicalCondition = random.Next(10, 100),
-                        MentalCondition = random.Next(10, 100),
+                        PhysicalCondition = (byte)random.Next(10, 100),
+                        MentalCondition = (byte)random.Next(10, 100),
+                        FitnessCondition = (byte)random.Next(10, 100)
                     };
 
                     // random Wage per week, from 500 to 5000
@@ -1179,8 +1180,9 @@ namespace SoccerOpenServer.Services
                 PersonHealthAndFitnessID = Guid.NewGuid(),
                 PersonID = personID,
                 HealthStatus = HealthStatus.Healthy,
-                PhysicalCondition = random.Next(70, 101),
-                MentalCondition = random.Next(70, 101),
+                PhysicalCondition = (byte)random.Next(70, 101),
+                MentalCondition = (byte)random.Next(70, 101),
+                FitnessCondition = (byte)random.Next(70, 101)
             };
 
             var contract = new Contract
