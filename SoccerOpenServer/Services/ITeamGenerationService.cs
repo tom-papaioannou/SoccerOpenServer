@@ -6,6 +6,7 @@ using SoccerOpenServer.Models.Competitions;
 using SoccerOpenServer.Models.Contracts;
 using SoccerOpenServer.Models.People;
 using SoccerOpenServer.Models.Teams;
+using SoccerOpenServer.Models.Training;
 using SoccerOpenServer.Models.World;
 using System;
 
@@ -1019,6 +1020,7 @@ namespace SoccerOpenServer.Services
 
                 // Store player IDs for later position assignment
                 var teamPlayerIDs = new List<Guid>();
+                var teamPlayers = new List<Person>();
                 var teamPlayerStats = new List<PlayerStats>();
 
                 List<byte> teamShirtNumbersAssigned = new List<byte>();
@@ -1126,12 +1128,14 @@ namespace SoccerOpenServer.Services
 
                     // Store player ID for position assignment
                     teamPlayerIDs.Add(personID);
+                    teamPlayers.Add(person);
                     teamPlayerStats.Add(playerStats);
                 }
 
                 AssignBestTeamTacticPriorities(team.TeamID, teamPlayerStats);
                 AddManagerToTeam(team, serverID, nationID, targetNation, teamGenerationData, nationsById, random);
-                AddCoachesToTeam(team, serverID, nationID, targetNation, teamGenerationData, nationsById, random);
+                var coachIDs = AddCoachesToTeam(team, serverID, nationID, targetNation, teamGenerationData, nationsById, random);
+                AddTrainingScheduleToTeam(team, teamPlayers, coachIDs, random);
                 AddMedicsToTeam(team, serverID, nationID, targetNation, teamGenerationData, nationsById, random);
 
                 teams.Add(team);
@@ -1201,7 +1205,7 @@ namespace SoccerOpenServer.Services
             _context.Contracts.Add(contract);
         }
 
-        private void AddCoachesToTeam(
+        private List<Guid> AddCoachesToTeam(
             Team team,
             Guid? serverID,
             Guid? nationID,
@@ -1210,6 +1214,7 @@ namespace SoccerOpenServer.Services
             IReadOnlyDictionary<Guid, Nation> nationsById,
             Random random)
         {
+            var coachIDs = new List<Guid>();
             var personGenerationData = teamGenerationData;
 
             if (nationID.HasValue && nationsById.TryGetValue(nationID.Value, out var coachNation))
@@ -1249,7 +1254,39 @@ namespace SoccerOpenServer.Services
                 _context.People.Add(person);
                 _context.CoachStats.Add(coachStats);
                 _context.Contracts.Add(contract);
+                coachIDs.Add(person.PersonID);
             }
+
+            return coachIDs;
+        }
+
+        private void AddTrainingScheduleToTeam(
+            Team team,
+            IEnumerable<Person> teamPlayers,
+            IReadOnlyList<Guid> coachIDs,
+            Random random)
+        {
+            var trainingSchedule = new TrainingSchedule
+            {
+                TrainingScheduleID = Guid.NewGuid(),
+                TeamID = team.TeamID,
+                TrainingScheduleLevel = TrainingScheduleLevel.Easy,
+                ScheduleName = "Training Schedule 1",
+                AttackPoints = 0,
+                DefendPoints = 0,
+                ControlPoints = 0,
+                GoalkeeperPoints = 0,
+                TacticPoints = 0,
+                FitnessPoints = 0,
+                CoachID = coachIDs[random.Next(coachIDs.Count)]
+            };
+
+            foreach (var player in teamPlayers)
+            {
+                player.TrainingScheduleID = trainingSchedule.TrainingScheduleID;
+            }
+
+            _context.Add(trainingSchedule);
         }
 
         private void AddMedicsToTeam(

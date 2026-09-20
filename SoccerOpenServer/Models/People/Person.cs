@@ -4,6 +4,7 @@
 ﻿using SoccerOpenServer.Models.Contracts;
 using SoccerOpenServer.Models.Servers;
 using SoccerOpenServer.Models.Teams;
+using SoccerOpenServer.Models.Training;
 using SoccerOpenServer.Models.Users;
 using SoccerOpenServer.Models.World;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -46,5 +47,9 @@ namespace SoccerOpenServer.Models.People
 
         [JsonIgnore]
         public ICollection<ManagerFormationPicked> ManagerFormationsPicked { get; set; } = new List<ManagerFormationPicked>();
+
+        public Guid? TrainingScheduleID { get; set; }
+
+        public TrainingSchedule? TrainingSchedule { get; set; }
     }
 }

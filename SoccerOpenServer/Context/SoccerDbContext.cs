@@ -6,6 +6,7 @@ using SoccerOpenServer.Models.Contracts;
 using SoccerOpenServer.Models.People;
 using SoccerOpenServer.Models.Servers;
 using SoccerOpenServer.Models.Teams;
+using SoccerOpenServer.Models.Training;
 using SoccerOpenServer.Models.Users;
 using SoccerOpenServer.Models.World;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ public class SoccerDbContext : DbContext
     public DbSet<PlayerUnavailability> PlayerUnavailabilities { get; set; }
     public DbSet<PlayerCompetitionDiscipline> PlayerCompetitionDisciplines { get; set; }
     public DbSet<TeamTacticPriority> TeamTacticPriorities { get; set; }
+    public DbSet<TrainingSchedule> TrainingSchedules { get; set; }
     public SoccerDbContext(DbContextOptions<SoccerDbContext> options)
         : base(options) { }
 
@@ -330,5 +332,11 @@ public class SoccerDbContext : DbContext
                     "CK_TeamTacticPriority_Priority",
                     "[Priority] >= 1");
             });
+
+        modelBuilder.Entity<Person>()
+            .HasOne(p => p.TrainingSchedule)
+            .WithMany(t => t.Persons)
+            .HasForeignKey(p => p.TrainingScheduleID)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
