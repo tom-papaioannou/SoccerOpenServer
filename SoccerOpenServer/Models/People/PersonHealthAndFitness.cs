@@ -13,10 +13,13 @@ namespace SoccerOpenServer.Models.People
         public Person Person { get; set; } = null!;
 
         [Range(1, 100)]
-        public int PhysicalCondition { get; set; } = 100;
+        public byte PhysicalCondition { get; set; } = 100;
 
         [Range(1, 100)]
-        public int MentalCondition { get; set; } = 100;
+        public byte MentalCondition { get; set; } = 100;
+
+        [Range(1, 100)]
+        public byte FitnessCondition { get; set; } = 100;
 
         public HealthStatus HealthStatus { get; set; } = HealthStatus.Healthy;
     }
