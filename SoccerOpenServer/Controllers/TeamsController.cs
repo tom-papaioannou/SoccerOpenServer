@@ -158,6 +158,8 @@ namespace SoccerOpenServer.Controllers
                     .ThenInclude(p => p.PlayerTrainedPositions)
                 .Include(c => c.Person)
                     .ThenInclude(p => p.PlayerTrainedRoles)
+                .Include(c => c.Person)
+                    .ThenInclude(p => p.PlayerPreferredMoves)
                 .Select(c => new
                 {
                     c.Person.PersonID,
@@ -178,7 +180,8 @@ namespace SoccerOpenServer.Controllers
                         ptr.PlayerPosition,
                         ptr.PlayerRole,
                         ptr.PlayerTrainedRoleAdaptation
-                    })
+                    }),
+                    PreferredMoves = c.Person.PlayerPreferredMoves.Select(pm => pm.PreferredMove)
                 })
                 .ToListAsync();
 
@@ -492,7 +495,8 @@ namespace SoccerOpenServer.Controllers
                     p.PlayerStats,
                     p.HealthAndFitness,
                     p.PlayerTrainedPositions,
-                    p.PlayerTrainedRoles
+                    p.PlayerTrainedRoles,
+                    PreferredMoves = p.PlayerPreferredMoves.Select(pm => pm.PreferredMove)
                 })
                 .FirstOrDefaultAsync();
 
