@@ -3,6 +3,7 @@
 
 using SoccerOpenServer.Models.Competitions;
 using SoccerOpenServer.Models.World;
+using SoccerOpenServer.DTO.Nations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,84 @@ namespace SoccerOpenServer.Controllers
         public NationsController(SoccerDbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet("{nationID}/details")]
+        public async Task<ActionResult<NationDetailsDTO>> GetDetails(Guid nationID)
+        {
+            var nation = await _context.Nations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(n => n.NationID == nationID);
+
+            if (nation == null)
+                return NotFound();
+
+            var competitions = await _context.Competitions
+                .AsNoTracking()
+                .Where(c => c.NationID == nationID)
+                .Select(c => new NationCompetitionDTO
+                {
+                    CompetitionID = c.CompetitionID,
+                    CompetitionName = c.CompetitionName,
+                    NationID = c.NationID,
+                    Priority = c.Priority,
+                    CompetitionType = (int)c.CompetitionType,
+                    CompetitionTeamsType = (int)c.CompetitionTeamsType,
+                    TeamsCount = c.Teams == null ? 0 : c.Teams.Count
+                })
+                .ToListAsync();
+
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var nationalTeamID = await _context.Teams
+                .Where(t => t.IsNationalTeam && t.NationID == nationID)
+                .Select(t => (Guid?)t.TeamID)
+                .SingleOrDefaultAsync();
+
+            var squad = new List<NationSquadPlayerDTO>();
+            if (nationalTeamID.HasValue)
+            {
+                var contracts = await _context.Contracts
+                    .AsNoTracking()
+                    .Where(c => c.TeamID == nationalTeamID.Value && c.Role == Models.Contracts.Role.Player &&
+                                (c.EndDate == null || c.EndDate >= today))
+                    .Include(c => c.Person)
+                        .ThenInclude(p => p.PlayerTrainedPositions)
+                    .Include(c => c.Person)
+                        .ThenInclude(p => p.PlayerTrainedRoles)
+                    .ToListAsync();
+
+                squad = contracts
+                    .GroupBy(c => c.PersonID)
+                    .Select(g => g.OrderByDescending(c => c.StartDate).First())
+                    .Select(c => new NationSquadPlayerDTO
+                    {
+                        PersonID = c.PersonID,
+                        Name = c.Person.Name,
+                        Surname = c.Person.Surname,
+                        DateOfBirth = c.Person.DateOfBirth,
+                        NationID = c.Person.NationID,
+                        EndDate = c.EndDate,
+                        ShirtNumber = c.ShirtNumber,
+                        Wage = c.Wage,
+                        PlayerTrainedPositions = c.Person.PlayerTrainedPositions?.ToList() ?? [],
+                        PlayerTrainedRoles = c.Person.PlayerTrainedRoles?.ToList() ?? []
+                    })
+                    .OrderBy(p => p.Surname)
+                    .ThenBy(p => p.Name)
+                    .ToList();
+            }
+
+            return Ok(new NationDetailsDTO
+            {
+                NationID = nation.NationID,
+                Name = nation.Name,
+                ISO2 = nation.ISO2,
+                ISO3 = nation.ISO3,
+                FlagUrl = nation.FlagUrl,
+                ContinentID = nation.ContinentID,
+                Competitions = competitions,
+                Squad = squad
+            });
         }
 
         [HttpGet("getAllContinents")]
@@ -44,10 +123,10 @@ namespace SoccerOpenServer.Controllers
         }
 
         [HttpGet("{competitionParentID}")]
-        public async Task<ActionResult<Nation>> GetCompetitionParent(Guid nationID)
+        public async Task<ActionResult<Nation>> GetCompetitionParent(Guid competitionParentID)
         {
             var nation = await _context.Nations
-                .FirstOrDefaultAsync(cp => cp.NationID == nationID);
+                .FirstOrDefaultAsync(cp => cp.NationID == competitionParentID);
 
             if (nation == null)
                 return NotFound();

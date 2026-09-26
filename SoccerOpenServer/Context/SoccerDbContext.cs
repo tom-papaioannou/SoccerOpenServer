@@ -221,6 +221,17 @@ public class SoccerDbContext : DbContext
             .WithOne(k => k.Team)
             .HasForeignKey<Team>(t => t.KitID);
 
+        modelBuilder.Entity<Team>()
+            .HasOne(t => t.Nation)
+            .WithOne(n => n.NationalTeam)
+            .HasForeignKey<Team>(t => t.NationID)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Team>()
+            .HasIndex(t => t.NationID)
+            .IsUnique()
+            .HasFilter("[NationID] IS NOT NULL");
+
         modelBuilder.Entity<Person>()
             .HasOne(p => p.HealthAndFitness)
             .WithOne(h => h.Person)

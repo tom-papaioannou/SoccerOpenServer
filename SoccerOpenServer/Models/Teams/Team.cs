@@ -4,6 +4,7 @@
 ﻿using SoccerOpenServer.Models.Competitions;
 using SoccerOpenServer.Models.Contracts;
 using SoccerOpenServer.Models.Users;
+using SoccerOpenServer.Models.World;
 using System.Text.Json.Serialization;
 
 namespace SoccerOpenServer.Models.Teams
@@ -37,6 +38,13 @@ namespace SoccerOpenServer.Models.Teams
         public virtual Kit Kit { get; set; } = null!;
 
         public string? BadgePath { get; set; }
+
+        public Guid? NationID { get; set; }
+
+        [JsonIgnore]
+        public virtual Nation? Nation { get; set; }
+
+        public bool IsNationalTeam { get; set; }
 
         public ICollection<TeamTacticPriority> TacticPriorities { get; set; } = new List<TeamTacticPriority>();
     }
