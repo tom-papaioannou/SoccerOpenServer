@@ -31,6 +31,7 @@ namespace SoccerOpenServer.Models.People
 
         public ICollection<PlayerTrainedPosition>? PlayerTrainedPositions { get; set; }
         public ICollection<PlayerTrainedRole>? PlayerTrainedRoles { get; set; }
+        public ICollection<PlayerPreferredMove> PlayerPreferredMoves { get; set; } = new List<PlayerPreferredMove>();
         public virtual PlayerStats? PlayerStats { get; set; }
         public virtual CoachStats? CoachStats { get; set; }
         public virtual MedicStats? MedicStats { get; set; }

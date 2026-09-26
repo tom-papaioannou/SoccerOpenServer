@@ -20,6 +20,7 @@ public class SoccerDbContext : DbContext
     public DbSet<PlayerTactic> PlayerTactics { get; set; }
     public DbSet<PlayerTrainedPosition> PlayerTrainedPositions { get; set; }
     public DbSet<PlayerTrainedRole> PlayerTrainedRoles { get; set; }
+    public DbSet<PlayerPreferredMove> PlayerPreferredMoves { get; set; }
     public DbSet<Competition> Competitions { get; set; }
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<AppUserClaim> AppUserClaims { get; set; }
@@ -112,6 +113,16 @@ public class SoccerDbContext : DbContext
             .ToTable(table => table.HasCheckConstraint(
                 "CK_PlayerStats_LegRatings",
                 "(([RightLegRating] >= 85 AND [LeftLegRating] >= 25 AND [LeftLegRating] < [RightLegRating]) OR ([LeftLegRating] >= 85 AND [RightLegRating] >= 25 AND [RightLegRating] < [LeftLegRating]))"));
+
+        modelBuilder.Entity<PlayerPreferredMove>()
+            .HasOne(pm => pm.Person)
+            .WithMany(p => p.PlayerPreferredMoves)
+            .HasForeignKey(pm => pm.PersonID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PlayerPreferredMove>()
+            .HasIndex(pm => new { pm.PersonID, pm.PreferredMove })
+            .IsUnique();
 
         modelBuilder.Entity<CoachStats>()
             .HasOne(cs => cs.Person)

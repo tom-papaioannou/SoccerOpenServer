@@ -1101,6 +1101,20 @@ namespace SoccerOpenServer.Services
                         trainedRoles.AddRange(rolesForPosition);
                     }
 
+                    var primaryPosition = requiredPrimaryPosition ?? trainedPositions[0].PlayerPosition;
+                    var preferredMoves = PlayerPreferredMoveGenerator.Generate(
+                        random,
+                        primaryPosition,
+                        trainedRoles.Select(role => role.PlayerRole).ToArray())
+                        .Select(preferredMove => new PlayerPreferredMove
+                        {
+                            PlayerPreferredMoveID = Guid.NewGuid(),
+                            PersonID = personID,
+                            PreferredMove = preferredMove
+                        })
+                        .ToList();
+                    person.PlayerPreferredMoves = preferredMoves;
+
                     byte shirtNumber = (byte)random.Next(1, 100);
 
                     if(teamShirtNumbersAssigned.Contains(shirtNumber))
@@ -1125,6 +1139,7 @@ namespace SoccerOpenServer.Services
                     _context.PlayerStats.Add(playerStats);
                     _context.PlayerTrainedPositions.AddRange(trainedPositions);
                     _context.PlayerTrainedRoles.AddRange(trainedRoles);
+                    _context.PlayerPreferredMoves.AddRange(preferredMoves);
 
                     // Store player ID for position assignment
                     teamPlayerIDs.Add(personID);
