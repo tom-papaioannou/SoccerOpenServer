@@ -496,7 +496,7 @@ namespace SoccerOpenServer.Controllers
                     p.HealthAndFitness,
                     p.PlayerTrainedPositions,
                     p.PlayerTrainedRoles,
-                    PreferredMoves = p.PlayerPreferredMoves.Select(pm => pm.PreferredMove)
+                    PlayerPreferredMoves = p.PlayerPreferredMoves.Select(pm => pm.PreferredMove)
                 })
                 .FirstOrDefaultAsync();
 
