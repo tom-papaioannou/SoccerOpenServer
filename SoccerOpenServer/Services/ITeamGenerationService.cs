@@ -1116,7 +1116,7 @@ namespace SoccerOpenServer.Services
                     teamShirtNumbersAssigned.Add(shirtNumber);
                     contract.ShirtNumber = shirtNumber;
 
-                    PlayerStats playerStats = AssignPlayerStatsToNewPlayer(personID);
+                    PlayerStats playerStats = AssignPlayerStatsToNewPlayer(personID, random);
 
                     // Add entities to database context
                     _context.People.Add(person);
@@ -1376,9 +1376,9 @@ namespace SoccerOpenServer.Services
             };
         }
 
-        private PlayerStats AssignPlayerStatsToNewPlayer(Guid PlayerID)
+        private PlayerStats AssignPlayerStatsToNewPlayer(Guid PlayerID, Random random)
         {
-            var random = new Random();
+            var legRatings = PlayerLegRatingGenerator.Generate(random);
 
             // Create PlayerStats with random values between 1 and 100
             var playerStats = new PlayerStats
@@ -1401,7 +1401,9 @@ namespace SoccerOpenServer.Services
                 Acceleration = (byte)random.Next(1, 101),
                 Strength = (byte)random.Next(1, 101),
                 Jumping = (byte)random.Next(1, 101),
-                Stamina = (byte)random.Next(1, 101)
+                Stamina = (byte)random.Next(1, 101),
+                RightLegRating = legRatings.RightLegRating,
+                LeftLegRating = legRatings.LeftLegRating
             };
 
             return playerStats;

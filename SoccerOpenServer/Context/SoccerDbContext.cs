@@ -108,6 +108,11 @@ public class SoccerDbContext : DbContext
             .HasIndex(ps => ps.PersonID)
             .IsUnique();
 
+        modelBuilder.Entity<PlayerStats>()
+            .ToTable(table => table.HasCheckConstraint(
+                "CK_PlayerStats_LegRatings",
+                "(([RightLegRating] >= 85 AND [LeftLegRating] >= 25 AND [LeftLegRating] < [RightLegRating]) OR ([LeftLegRating] >= 85 AND [RightLegRating] >= 25 AND [RightLegRating] < [LeftLegRating]))"));
+
         modelBuilder.Entity<CoachStats>()
             .HasOne(cs => cs.Person)
             .WithOne(p => p.CoachStats)
