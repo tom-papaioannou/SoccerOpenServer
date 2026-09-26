@@ -2,6 +2,7 @@
 // Licensed under the MIT License
 
 using System.Text.Json.Serialization;
+using SoccerOpenServer.Models.Teams;
 
 namespace SoccerOpenServer.Models.World
 {
@@ -15,5 +16,8 @@ namespace SoccerOpenServer.Models.World
         public Guid ContinentID { get; set; }
         [JsonIgnore]
         public Continent Continent { get; set; } = null!;
+
+        [JsonIgnore]
+        public Team? NationalTeam { get; set; }
     }
 }

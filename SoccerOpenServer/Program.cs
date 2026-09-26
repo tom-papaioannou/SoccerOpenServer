@@ -51,6 +51,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 builder.Services.AddScoped<ITeamGenerationService, TeamGenerationService>();
+builder.Services.AddScoped<NationalTeamGenerationService>();
 builder.Services.AddScoped<ITeamAccessService, TeamAccessService>();
 
 var app = builder.Build();
@@ -74,6 +75,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<SoccerDbContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasherService>();
     var teamGenerationService = scope.ServiceProvider.GetRequiredService<ITeamGenerationService>();
+    var nationalTeamGenerationService = scope.ServiceProvider.GetRequiredService<NationalTeamGenerationService>();
     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
     // optional: ensure DB exists / migrations applied
@@ -461,6 +463,7 @@ using (var scope = app.Services.CreateScope())
         await db.SaveChangesAsync();
         await teamGenerationService.AssignPlayersToGeneratedTeams(generatedTeamIDs);
         await db.SaveChangesAsync();
+        await nationalTeamGenerationService.EnsureNationalSquadsAsync();
         await transaction.CommitAsync();
     }
 
