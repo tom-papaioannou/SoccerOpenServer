@@ -953,6 +953,9 @@ namespace SoccerOpenServer.Services
             var teams = new List<Team>();
             var random = new Random();
 
+            // The public game currently uses today's date, with no separate game calendar.
+            var currentGameYear = DateTime.UtcNow.Year;
+
             var nations = await _context.Nations.ToListAsync();
             var nationsById = nations.ToDictionary(n => n.NationID);
             var targetNation = nations.FirstOrDefault(n => n.NationID == nationID);
@@ -1006,6 +1009,8 @@ namespace SoccerOpenServer.Services
                     StadiumID = stadium.StadiumID,
                     KitID = kit.KitID
                 };
+
+                team.TeamInformation = TeamInformationGenerator.Generate(team, currentGameYear);
 
                 // Generate primary tactic for the team
                 var primaryTactic = new Tactic

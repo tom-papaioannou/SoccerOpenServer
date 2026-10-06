@@ -16,6 +16,7 @@ public class SoccerDbContext : DbContext
     public DbSet<Person> People { get; set; }
     public DbSet<Contract> Contracts { get; set; }
     public DbSet<Team> Teams { get; set; }
+    public DbSet<TeamInformation> TeamInformations { get; set; }
     public DbSet<Tactic> Tactics { get; set; }
     public DbSet<PlayerTactic> PlayerTactics { get; set; }
     public DbSet<PlayerTrainedPosition> PlayerTrainedPositions { get; set; }
@@ -215,6 +216,33 @@ public class SoccerDbContext : DbContext
             .HasOne(t => t.Stadium)
             .WithOne(s => s.Team)
             .HasForeignKey<Team>(t => t.StadiumID);
+
+        modelBuilder.Entity<TeamInformation>(entity =>
+        {
+            entity.HasKey(x => x.TeamID);
+            entity.HasOne(x => x.Team)
+                .WithOne(x => x.TeamInformation)
+                .HasForeignKey<TeamInformation>(x => x.TeamID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(x => x.Balance).HasPrecision(18, 2);
+            entity.Property(x => x.TransferBudget).HasPrecision(18, 2);
+            entity.Property(x => x.WageBudget).HasPrecision(18, 2);
+            // Ordered enums use the existing integer persistence convention.
+            entity.Property(x => x.TrainingFacilitiesLevel).HasConversion<int>();
+            entity.ToTable(table =>
+            {
+                table.HasCheckConstraint("CK_TeamInformations_Reputation", "[Reputation] BETWEEN 1 AND 100");
+                table.HasCheckConstraint("CK_TeamInformations_Finances", "[Balance] >= 0 AND [TransferBudget] >= 0 AND [WageBudget] >= 0");
+                table.HasCheckConstraint("CK_TeamInformations_YearFounded", "[YearFounded] BETWEEN 1850 AND 9999");
+                table.HasCheckConstraint("CK_TeamInformations_TrainingFacilitiesLevel", "[TrainingFacilitiesLevel] BETWEEN 1 AND 6");
+            });
+        });
+
+        modelBuilder.Entity<Team>()
+            .Navigation(x => x.TeamInformation)
+            .IsRequired();
 
         modelBuilder.Entity<Team>()
             .HasOne(t => t.Kit)

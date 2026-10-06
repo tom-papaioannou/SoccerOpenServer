@@ -2,6 +2,7 @@
 // Licensed under the MIT License
 
 ﻿using SoccerOpenServer.Models.Competitions;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using SoccerOpenServer.Models.Contracts;
 using SoccerOpenServer.Models.Users;
 using SoccerOpenServer.Models.World;
@@ -45,6 +46,10 @@ namespace SoccerOpenServer.Models.Teams
         public virtual Nation? Nation { get; set; }
 
         public bool IsNationalTeam { get; set; }
+
+        [JsonIgnore]
+        [ValidateNever] // Created server-side, so it is not required in Team request bodies.
+        public virtual TeamInformation TeamInformation { get; set; } = null!;
 
         public ICollection<TeamTacticPriority> TacticPriorities { get; set; } = new List<TeamTacticPriority>();
     }
