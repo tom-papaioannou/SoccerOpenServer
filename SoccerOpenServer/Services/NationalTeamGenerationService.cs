@@ -109,6 +109,7 @@ public sealed class NationalTeamGenerationService
             Competitions = new List<SoccerOpenServer.Models.Competitions.Competition>()
         };
 
+        team.TeamInformation = TeamInformationGenerator.Generate(team, DateTime.UtcNow.Year);
         _context.Teams.Add(team);
         await _context.SaveChangesAsync(cancellationToken);
         return team;

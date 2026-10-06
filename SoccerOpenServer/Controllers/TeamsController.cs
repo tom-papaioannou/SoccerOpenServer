@@ -118,6 +118,12 @@ namespace SoccerOpenServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Team>> PostTeam([FromBody] Team team)
         {
+            if (team.TeamID == Guid.Empty)
+            {
+                team.TeamID = Guid.NewGuid();
+            }
+
+            team.TeamInformation = TeamInformationGenerator.Generate(team, DateTime.UtcNow.Year);
             _db.Teams.Add(team);
             await _db.SaveChangesAsync();
             return CreatedAtAction(nameof(GetTeam), new { teamID = team.TeamID }, team);
