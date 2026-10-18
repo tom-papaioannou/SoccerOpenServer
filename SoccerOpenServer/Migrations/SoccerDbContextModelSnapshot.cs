@@ -739,6 +739,9 @@ namespace SoccerOpenServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StadiumLayout")
+                        .HasColumnType("int");
+
                     b.Property<int>("StadiumState")
                         .HasColumnType("int");
 

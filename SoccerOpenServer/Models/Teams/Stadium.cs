@@ -12,6 +12,7 @@ namespace SoccerOpenServer.Models.Teams
         public string City { get; set; } = string.Empty;
         public int Capacity { get; set; }
         public StadiumState StadiumState { get; set; } = StadiumState.Low;
+        public StadiumLayout StadiumLayout { get; set; } = StadiumLayout.Layout01;
         public double Latitude { get; set; } = 0.0;
         public double Longitude { get; set; } = 0.0;
         [JsonIgnore]
