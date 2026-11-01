@@ -507,6 +507,9 @@ namespace SoccerOpenServer.Migrations
                     b.Property<byte>("Goalkeeping")
                         .HasColumnType("tinyint");
 
+                    b.Property<byte>("Heading")
+                        .HasColumnType("tinyint");
+
                     b.Property<byte>("Jumping")
                         .HasColumnType("tinyint");
 

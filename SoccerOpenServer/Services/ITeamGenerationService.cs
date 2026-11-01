@@ -1406,6 +1406,7 @@ namespace SoccerOpenServer.Services
                 PlayerStatsID = Guid.NewGuid(),
                 PersonID = PlayerID,
                 Shooting = (byte)random.Next(1, 101),
+                Heading = (byte)random.Next(1, 101),
                 Passing = (byte)random.Next(1, 101),
                 Crossing = (byte)random.Next(1, 101),
                 Tackling = (byte)random.Next(1, 101),

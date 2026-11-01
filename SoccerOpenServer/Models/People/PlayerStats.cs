@@ -15,6 +15,8 @@ namespace SoccerOpenServer.Models.People
         [Range(1, 100)]
         public byte Shooting { get; set; }
         [Range(1, 100)]
+        public byte Heading { get; set; }
+        [Range(1, 100)]
         public byte Passing { get; set; }
         [Range(1, 100)]
         public byte Crossing { get; set; }
