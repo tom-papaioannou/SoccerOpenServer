@@ -768,6 +768,9 @@ namespace SoccerOpenServer.Migrations
                     b.Property<bool>("AttackRight")
                         .HasColumnType("bit");
 
+                    b.Property<int>("CrossingMentality")
+                        .HasColumnType("int");
+
                     b.Property<bool>("EarlyCrosses")
                         .HasColumnType("bit");
 

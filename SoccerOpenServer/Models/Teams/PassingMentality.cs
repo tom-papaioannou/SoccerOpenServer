@@ -4,7 +4,7 @@
     {
         None = 0,
         Short = 1,
-        Balanced = 2,
+        Mixed = 2,
         Long = 3
     }
 }

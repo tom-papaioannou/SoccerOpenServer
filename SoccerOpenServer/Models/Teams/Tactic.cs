@@ -23,7 +23,8 @@ namespace SoccerOpenServer.Models.Teams
         public Formation? Formation { get; set; }
 
         public TacticMentality TacticMentality { get; set; } = TacticMentality.Balanced;
-        public PassingMentality PassingMentality { get; set; } = PassingMentality.Balanced;
+        public PassingMentality PassingMentality { get; set; } = PassingMentality.Mixed;
+        public CrossingMentality CrossingMentality { get; set; } = CrossingMentality.Mixed;
 
         public bool AttackLeft { get; set; } = true;
         public bool AttackMiddle { get; set; } = true;
