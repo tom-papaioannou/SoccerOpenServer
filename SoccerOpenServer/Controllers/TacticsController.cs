@@ -85,6 +85,11 @@ namespace SoccerOpenServer.Controllers
                 return BadRequest("Invalid passing mentality.");
             }
 
+            if (!Enum.IsDefined(typeof(CrossingMentality), newTactic.CrossingMentality) || newTactic.CrossingMentality == CrossingMentality.None)
+            {
+                return BadRequest("Invalid crossing mentality.");
+            }
+
             var team = await _teamAccessService.GetOwnedTeamAsync(User);
 
             if (team == null || team.TeamID != newTactic.TeamID)
@@ -236,6 +241,7 @@ namespace SoccerOpenServer.Controllers
                 tactic.Formation = updateTacticModel.Formation;
                 tactic.TacticMentality = updateTacticModel.TacticMentality;
                 tactic.PassingMentality = updateTacticModel.PassingMentality;
+                tactic.CrossingMentality = updateTacticModel.CrossingMentality; 
                 tactic.AttackLeft = updateTacticModel.AttackLeft;
                 tactic.AttackMiddle = updateTacticModel.AttackMiddle;
                 tactic.AttackRight = updateTacticModel.AttackRight;

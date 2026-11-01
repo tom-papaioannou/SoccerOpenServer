@@ -21,7 +21,10 @@ namespace SoccerOpenServer.DTO.Tactics
         public TacticMentality TacticMentality { get; set; } = TacticMentality.Balanced;
 
         [Required]
-        public PassingMentality PassingMentality { get; set; } = PassingMentality.Balanced;
+        public PassingMentality PassingMentality { get; set; } = PassingMentality.Mixed;
+
+        [Required]
+        public CrossingMentality CrossingMentality { get; set; } = CrossingMentality.Mixed;
 
         public bool AttackLeft { get; set; } = true;
         public bool AttackMiddle { get; set; } = true;
