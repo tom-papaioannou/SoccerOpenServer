@@ -30,5 +30,7 @@ namespace SoccerOpenServer.Models.Contracts
         public byte? ShirtNumber { get; set; }
 
         public int Wage { get; set; } = 0;
+
+        public bool isYouth { get; set; } = false;
     }
 }

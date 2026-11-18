@@ -217,6 +217,9 @@ namespace SoccerOpenServer.Migrations
                     b.Property<int>("Wage")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isYouth")
+                        .HasColumnType("bit");
+
                     b.HasKey("ContractID");
 
                     b.HasIndex("PersonID");
